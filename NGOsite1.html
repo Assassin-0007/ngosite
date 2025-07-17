@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Single Page Website</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        a { color: #2c7a7b; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        header {
+            background: #2c7a7b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            background-color: #68d391;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5em;
+            border-radius: 8px;
+            margin-right: 15px;
+            user-select: none;
+        }
+        nav {
+            margin-left: auto;
+        }
+        nav a {
+            margin-left: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        section {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 {
+            color: #2c7a7b;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2rem;
+            letter-spacing: 0.05em;
+        }
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        .about-content p {
+            margin-bottom: 1.2rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .gallery-grid img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1100;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #2c7a7b;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            padding: 0 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            user-select: none;
+        }
+
+        .events-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .event-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            transition: box-shadow 0.3s ease;
+        }
+        .event-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .event-card img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+        .event-date {
+            font-weight: 700;
+            color: #2c7a7b;
+            margin-bottom: 5px;
+        }
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .event-desc {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        #contact {
+            padding: 40px 20px;
+            background: #e6fffa;
+            border-top: 2px solid #68d391;
+            max-width: 1200px;
+            margin: 0 auto 0 auto;
+            border-radius: 0 0 16px 16px;
+        }
+        #contact h2 {
+            color: #2c7a7b;
+            margin-bottom: 12px;
+        }
+
+        footer {
+            background-color: #2c7a7b;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+        footer .social-icons {
+            margin-bottom: 10px;
+        }
+        footer .social-icons a {
+            color: white;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            color: #68d391;
+        }
+        footer input[type="email"] {
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: none;
+            margin-right: 10px;
+            font-size: 1rem;
+            max-width: 250px;
+        }
+        footer button {
+            background-color: #68d391;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #2c7a7b;
+            font-weight: 600;
+        }
+        footer button:hover {
+            background-color: #51a763;
+        }
+
+        @media (max-width: 600px) {
+            nav a {
+                font-size: 0.9rem;
+                margin-left: 10px;
+            }
+            .gallery-grid img {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" aria-label="NGO logo">NGO</div>
+        <h1>Hope for All Foundation</h1>
+        <nav>
+            <a href="#about">About Us</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#events">Events</a>
+        </nav>
+    </header>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <div class="about-content">
+            <p>We are a non-profit organization dedicated to improving lives through community-driven initiatives. Our mission is to empower vulnerable populations by providing education, healthcare, and sustainable development opportunities.</p>
+            <p>Founded in 2005, Hope for All Foundation has accomplished numerous milestones, including building schools, organizing health camps, and supporting environmental conservation.</p>
+            <p>Our core values include transparency, inclusiveness, and dedication. Together, we strive to make a measurable impact in the communities we serve.</p>
+            <p><em>Message from our founder:</em> "Every effort counts. Join us in building a better tomorrow."</p>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2>Gallery</h2>
+        <div class="gallery-grid">
+            <img src="https://picsum.photos/id/100/300/200" alt="Gallery image 1" tabindex="0" />
+            <img src="https://picsum.photos/id/101/300/200" alt="Gallery image 2" tabindex="0" />
+            <img src="https://picsum.photos/id/102/300/200" alt="Gallery image 3" tabindex="0" />
+            <img src="https://picsum.photos/id/103/300/200" alt="Gallery image 4" tabindex="0" />
+            <img src="https://picsum.photos/id/104/300/200" alt="Gallery image 5" tabindex="0" />
+            <img src="https://picsum.photos/id/105/300/200" alt="Gallery image 6" tabindex="0" />
+            <img src="https://picsum.photos/id/106/300/200" alt="Gallery image 7" tabindex="0" />
+            <img src="https://picsum.photos/id/107/300/200" alt="Gallery image 8" tabindex="0" />
+            <img src="https://picsum.photos/id/108/300/200" alt="Gallery image 9" tabindex="0" />
+            <img src="https://picsum.photos/id/109/300/200" alt="Gallery image 10" tabindex="0" />
+            <img src="https://picsum.photos/id/110/300/200" alt="Gallery image 11" tabindex="0" />
+            <img src="https://picsum.photos/id/111/300/200" alt="Gallery image 12" tabindex="0" />
+            <img src="https://picsum.photos/id/112/300/200" alt="Gallery image 13" tabindex="0" />
+            <img src="https://picsum.photos/id/113/300/200" alt="Gallery image 14" tabindex="0" />
+            <img src="https://picsum.photos/id/114/300/200" alt="Gallery image 15" tabindex="0" />
+            <img src="https://picsum.photos/id/115/300/200" alt="Gallery image 16" tabindex="0" />
+            <img src="https://picsum.photos/id/116/300/200" alt="Gallery image 17" tabindex="0" />
+            <img src="https://picsum.photos/id/117/300/200" alt="Gallery image 18" tabindex="0" />
+            <img src="https://picsum.photos/id/118/300/200" alt="Gallery image 19" tabindex="0" />
+            <img src="https://picsum.photos/id/119/300/200" alt="Gallery image 20" tabindex="0" />
+        </div>
+    </section>
+
+    <section id="events">
+        <h2>Events</h2>
+        <div class="events-list">
+            <article class="event-card">
+                <img src="https://picsum.photos/id/201/600/400" alt="Image for Annual Fundraiser Gala" />
+                <div class="event-date">August 10, 2025</div>
+                <div class="event-title">Annual Fundraiser Gala</div>
+                <div class="event-desc">Join us for an evening of inspiration and support to raise funds for our upcoming projects.</div>
+            </article>
+            <article class="event-card">
+                <img src="https://picsum.photos/id/202/600/400" alt="Image for Community Health Camp" />
+                <div class="event-date">September 15, 2025</div>
+                <div class="event-title">Community Health Camp</div>
+                <div class="event-desc">Free health screenings and awareness programs for local communities.</div>
+            </article>
+            <article class="event-card">
+                <img src="https://picsum.photos/id/203/600/400" alt="Image for Environmental Cleanup Drive" />
+                <div class="event-date">October 30, 2025</div>
+                <div class="event-title">Environmental Cleanup Drive</div>
+                <div class="event-desc">Volunteer to help clean and restore natural habitats in our region.</div>
+            </article>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <div style="text-align:center; font-size:1.15rem;">
+            <p>We'd love to hear from you!</p>
+            <p>
+                <strong>Phone:</strong> <a href="tel:+911234567890">+91 12345 67890</a><br>
+                <strong>Email:</strong> <a href="mailto:contact@hopeforall.org">contact@hopeforall.org</a>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-icons" aria-label="Social media links">
+            <a href="#" aria-label="Facebook">&#x1F426;</a>
+            <a href="#" aria-label="Twitter">&#x1F426;</a>
+            <a href="#" aria-label="Instagram">&#x1F426;</a>
+        </div>
+        <form aria-label="Newsletter signup">
+            <input type="email" placeholder="Enter your email" aria-label="Email address" required>
+            <button type="submit">Subscribe</button>
+        </form>
+        <p>&copy; 2025 Hope for All Foundation. All rights reserved.</p>
+    </footer>
+
+    <div class="modal" id="modal">
+        <button class="modal-close" aria-label="Close image">&times;</button>
+        <div class="modal-content">
+            <img src="" alt="Enlarged gallery image" />
+        </div>
+    </div>
+    <script>
+        // Modal logic for gallery images
+        const modal = document.getElementById('modal');
+        const modalImg = modal.querySelector('.modal-content img');
+        const closeBtn = modal.querySelector('.modal-close');
+        document.querySelectorAll('.gallery-grid img').forEach(img => {
+            img.addEventListener('click', () => {
+                modalImg.src = img.src;
+                modalImg.alt = img.alt;
+                modal.classList.add('open');
+            });
+            img.addEventListener('keydown', (e) => {
+                if(e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    modalImg.src = img.src;
+                    modalImg.alt = img.alt;
+                    modal.classList.add('open');
+                }
+            });
+        });
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('open');
+        });
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) {
+                modal.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
